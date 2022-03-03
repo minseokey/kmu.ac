@@ -15,7 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import include
+import coreapp.views
 
 urlpatterns = [
+    path('admin/login/', coreapp.views.not_found, name='not_found'),
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
+    path('mypage', coreapp.views.mypage, name='mypage'),
+    path('not_found', coreapp.views.not_found, name='not_found'),
+    path('api/create', coreapp.views.create, name='create'),
+    path('api/edit', coreapp.views.edit, name='edit'),
+    path('api/delete', coreapp.views.delete, name='delete'),
+    path('<str:path_word>/qrcode', coreapp.views.qr, name='qrcode'),
+    path('', coreapp.views.index, name='index'),
+    path('<str:path_word>', coreapp.views.mapping, name='mapping')
 ]
