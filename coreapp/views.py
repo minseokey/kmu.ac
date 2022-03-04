@@ -163,7 +163,7 @@ def qr(request, path_word):
 
 def mypage(request):
     if request.user.is_authenticated:
-        urls = shortURL.objects.all()
+        urls = shortURL.objects.filter(creater= request.user)
         context = {'urls': urls}
         namestr = request.user.first_name
         context['name'] = re.sub(rmve_bracket, '', namestr)
