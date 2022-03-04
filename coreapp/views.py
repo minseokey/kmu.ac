@@ -31,7 +31,10 @@ def index(request):
     if request.user.is_authenticated:
         namestr = request.user.first_name
         context['name'] = re.sub(rmve_bracket, '', namestr)
-        context['badge'] = re.findall(remain_brakcet, namestr)[0]
+        try:
+            context['badge'] = re.findall(remain_brakcet, namestr)[0]
+        except:
+            context['badge'] = ''
 
     return render(request, 'index.html', context)
 
@@ -164,7 +167,10 @@ def mypage(request):
         context = {'urls': urls}
         namestr = request.user.first_name
         context['name'] = re.sub(rmve_bracket, '', namestr)
-        context['badge'] = re.findall(remain_brakcet, namestr)[0]
+        try:
+            context['badge'] = re.findall(remain_brakcet, namestr)[0]
+        except:
+            context['badge'] = ''
 
         return render(request, 'mypage.html', context)
     else:
@@ -179,7 +185,10 @@ def not_found(request):
     if request.user.is_authenticated:
         namestr = request.user.first_name
         context['name'] = re.sub(rmve_bracket, '', namestr)
-        context['badge'] = re.findall(remain_brakcet, namestr)[0]
+        try:
+            context['badge'] = re.findall(remain_brakcet, namestr)[0]
+        except:
+            context['badge'] = ''
     return render(request, 'notfound.html', context)
 
 
