@@ -3,7 +3,7 @@ import re
 from django.shortcuts import redirect, render
 from django.http import JsonResponse, FileResponse
 from .models import shortURL
-
+from django.core.cache import cache
 
 import qrcode
 import re
@@ -47,12 +47,15 @@ def create(request):
         url = req_data['url']
         #중복확인
         try:
+            # 이미 있는것은 캐시로 저장할 필요가 없다.
             shortURL.objects.get(path_word=path)
             result = { 'result': 'fail',
                         'data': 'already_exist'}
             print(result)
             return JsonResponse(result)
         except:
+            # short url에서 path를 키로, url을 데이터로 cache화 해서 저장
+            cache.set(path,url,60*60)
             shortURL(path_word=path, url=url, creater=request.user).save()
             result = { 'result': 'success',
                         'data': req_data['path_word'].replace(' ', '_')}
@@ -192,8 +195,15 @@ def not_found(request):
     return render(request, 'notfound.html', context)
 
 
+# 여기에 캐시 적용
 def mapping(request, path_word):
     try:
-        return redirect(shortURL.objects.get(path_word=str2urlpath(path_word)).url)
+        try:
+            tmp = cache.get(path_word) # 키가 path_word에 해당하는 cache의 value 값을 tmp로
+        except:
+            # 가져오는 형식은 위와 동일, path를 키로 데이터 베이스에서 불러온뒤 해당하는 url검색.
+            tmp = redirect(shortURL.objects.get(path_word=str2urlpath(path_word)).url)
+        return tmp
+
     except:
         return redirect('/not_found')

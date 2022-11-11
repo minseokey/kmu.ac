@@ -154,6 +154,16 @@ AUTHENTICATION_BACKENDS = (
     
 )
 
+CACHE = {
+    "default" : {
+        "BACKEND" : "django_redis.cache.RedisCache",
+        "LOCATION" : "redis://127.0.0.1:6379/1",
+        "OPTION" : {
+            "CLIENT_CLASS" : "django_redis.client.DefaultClient",
+        }
+    }
+}
+
 SITE_ID = 1
 
 LOGIN_REDIRECT_URL = '/' ### 오류가 나면 홈으로 돌아와라
